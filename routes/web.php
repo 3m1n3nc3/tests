@@ -29,6 +29,9 @@ if (config('app.env') === 'local')
     Route::get('/designer/preview/{type?}/{switch?}', function ($type, $switch = '')
     {
         if ($type === 'test-data') {
+            if ($switch === 'download') {
+                return response()->download(storage_path('test.data.txt'), 'test.data.txt');
+            }
             return dd(@json_decode(file_get_contents(storage_path('test.data.txt'))));
         }
     });
