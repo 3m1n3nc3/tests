@@ -1,32 +1,35 @@
 <?php
 
-/** @var \Laravel\Lumen\Routing\Router $router */
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Application Routes
+| Web Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register all of the routes for an application.
-| It is a breeze. Simply tell Lumen the URIs it should respond to
-| and give it the Closure to call when that URI is requested.
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+Route::get('/', function () {
+    return view('welcome');
 });
 
-$router->group(['prefix' => 'payment', 'as' => 'payment.', 'namespace' => 'Payments'], function() use ($router) {
+Route::name('payment.')->prefix('payment')->group(function() {
 
-    $router->post('paystack/pay', ['as' => 'paystack.pay', 'uses' => 'Paystack@gatewayRedirect']);
+    Route::post('/paystack/pay', [App\Http\Controllers\Payments\Paystack::class, 'gatewayRedirect'])->name('paystack.pay');
 
-    $router->get('paystack/callback', ['as' => 'paystack.callback', 'uses' => 'Paystack@handleCallback']);
+    Route::get('/paystack/callback', [App\Http\Controllers\Payments\Paystack::class, 'handleCallback'])->name('paystack.callback');
 });
 
-$router->get('designer/preview/{type}', function ($type, $switch = '')
+if (config('app.env') === 'local')
 {
-    if ($type === 'test-data') {
-        return dd(json_decode(file_get_contents(storage_path('test.data.txt'))));
-    }
-});
+    Route::get('/designer/preview/{type?}/{switch?}', function ($type, $switch = '')
+    {
+        if ($type === 'test-data') {
+            return dd(@json_decode(file_get_contents(storage_path('test.data.txt'))));
+        }
+    });
+}

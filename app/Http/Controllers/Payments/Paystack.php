@@ -29,7 +29,7 @@ class Paystack extends Controller
      */
     public function handleCallback()
     {
-        $paymentDetails = [];//ImportPaystack::getPaymentData();
+        $paymentDetails = ImportPaystack::getPaymentData();
 
         // dd($paymentDetails);
 
