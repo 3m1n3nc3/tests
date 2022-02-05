@@ -19,12 +19,12 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'payment', 'as' => 'payment.', 'namespace' => 'Payments'], function() use ($router) {
 
-    $router->post('/paystack/pay', ['as' => 'paystack.pay', 'uses' => 'Paystack@gatewayRedirect']);
+    $router->post('paystack/pay', ['as' => 'paystack.pay', 'uses' => 'Paystack@gatewayRedirect']);
 
-    $router->get('/paystack/callback', ['as' => 'paystack.callback', 'uses' => 'Paystack@handleCallback']);
+    $router->get('paystack/callback', ['as' => 'paystack.callback', 'uses' => 'Paystack@handleCallback']);
 });
 
-$router->get('/designer/preview/{type?}/{switch?}', function ($type, $switch = '')
+$router->get('designer/preview/{type}', function ($type, $switch = '')
 {
     if ($type === 'test-data') {
         return dd(json_decode(file_get_contents(storage_path('test.data.txt'))));
